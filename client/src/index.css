@@ -1,0 +1,15 @@
+#popup-modal{
+    display: flex;
+}
+/* #popup-modal > div > div > div.h-full.w-full.mt-5.flex.justify-center.items-center > div > div:nth-child(1){
+    display: flex;
+    justify-content: center;
+    align-items: center;
+} */
+
+#root > div > div.flex.flex-row.justify-between.bg-white > div.w-full.px-5.flex.flex-col.justify-between > div.flex.flex-col.mt-5 > div{
+    display: flex;
+    flex-direction: column;
+    align-items: end;
+
+}
