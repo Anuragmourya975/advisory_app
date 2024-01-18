@@ -2,7 +2,8 @@ import express from "express";
 import http from "http";
 import { Server as SocketIO } from "socket.io";
 import cors from "cors";
-
+import path from "path";
+import { fileURLToPath } from "url";
 const app = express();
 app.use(
   cors({ origin: ["http://localhost:5173", "https://farmer.sasyasystems.com"] })
@@ -14,7 +15,12 @@ const io = new SocketIO(server, {
     origin: ["http://localhost:5173", "https://farmer.sasyasystems.com"],
   },
 });
-
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+console.log("thisisdirname", __dirname);
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "client", "dist", "index.html"));
+});
 const FARMER_ROOM = "farmerRoom";
 
 io.on("connection", (socket) => {
@@ -40,11 +46,11 @@ io.on("connection", (socket) => {
     console.log("User disconnected");
   });
   // Set CORS headers for Socket.IO
-  socket.handshake.headers.origin = "http://localhost:5173";
+  socket.handshake.headers.origin = "https://farmer.sasyasystems.com";
 });
 
 const PORT = 3001;
-server.listen(PORT, "0.0.0.0", (err) => {
+server.listen(PORT, (err) => {
   if (err) {
     console.error("Server failed to start:", err);
   } else {
