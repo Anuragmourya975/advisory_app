@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import io from "socket.io-client";
 import FertilizerSchedule from "../Components/Advisory/FertilizerSchedule";
-
-const socket = io("http://localhost:3001");
+import advisoryImage from "../assets/advisory.jpg";
+const socket = io("https://farmer.sasyasystems.com");
 
 const Farmer = () => {
   const [selectedAdvisory, setSelectedAdvisory] = useState("");
@@ -42,7 +42,13 @@ const Farmer = () => {
       socket.off("farmerFertilizerAdvisoryMessage");
     };
   }, []);
-
+  const handleImageClick = () => {
+    // Image download logic
+    const link = document.createElement("a");
+    link.href = advisoryImage;
+    link.download = `Image_Advisory`;
+    link.click();
+  };
   const advisoryOptions = [
     "Weather Advisory",
     "Personalized Crop Advisory",
@@ -62,7 +68,6 @@ const Farmer = () => {
     }
   };
   return (
-   
     <>
       {/* This is an example component */}
       <div className="container mx-auto shadow-lg rounded-lg ">
@@ -301,18 +306,25 @@ const Farmer = () => {
                   {(() => {
                     switch (selectedAdvisory) {
                       case "Weather Advisory":
-                        return weatherAdvisoryMessages.map((message, index) => (
-                          <div className="flex mb-4">
-                            <div className="mr-2 py-3 px-4 bg-blue-400 rounded-bl-3xl rounded-tl-3xl rounded-tr-xl text-white">
-                              {message}
+                        return weatherAdvisoryMessages.map((message, index) => {
+                          const messageParts = message.split(",");
+                          const desiredValue = messageParts
+                            .slice(0, -1)
+                            .join(",")
+                            .trim();
+                          return (
+                            <div className="flex mb-4">
+                              <div className="mr-2 py-3 px-4 bg-blue-400 rounded-bl-3xl rounded-tl-3xl rounded-tr-xl text-white">
+                                {desiredValue}
+                              </div>
+                              <img
+                                src="https://source.unsplash.com/vpOeXr5wmR4/600x600"
+                                className="object-cover h-8 w-8 rounded-full"
+                                alt=""
+                              />
                             </div>
-                            <img
-                              src="https://source.unsplash.com/vpOeXr5wmR4/600x600"
-                              className="object-cover h-8 w-8 rounded-full"
-                              alt=""
-                            />
-                          </div>
-                        ));
+                          );
+                        });
                       case "Personalized Crop Advisory":
                         return <div className="mb-4 w-full"></div>;
                       case "Fertilization Schedule": //Need to fix for fertilization schedule
@@ -419,11 +431,51 @@ const Farmer = () => {
           <div className="w-2/5 border-l-2 px-5">
             <div className="flex flex-col">
               <div className="font-semibold text-xl py-4">Attachments!</div>
-              <img
+              {/* <img
                 src="https://images.unsplash.com/photo-1562240020-ce31ccb0fa7d?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8ZmlsZXxlbnwwfHwwfHx8MA%3D%3D/600x600"
                 className="object-cover rounded-xl h-64"
                 alt=""
-              />
+              /> */}
+              {weatherAdvisoryMessages.map((message, index) => {
+                const messageParts = message.split(",");
+                const desiredValue = messageParts.slice(-1)[0].trim();
+
+                if (
+                  desiredValue.endsWith(".jpeg") ||
+                  desiredValue.endsWith(".jpg") ||
+                  desiredValue.endsWith(".png")
+                ) {
+                  // Display the image using the desiredValue
+                  // Replace the following line with the actual code to display the image
+                  return (
+                    <img
+                      key={index}
+                      src={advisoryImage}
+                      alt={`Image ${index}`}
+                      onClick={handleImageClick}
+                      className="object-cover rounded-xl h-64 mt-4 cursor-pointer"
+                    />
+                  );
+                } else {
+                  // console.log(
+                  //   "Unsupported image extension. Cannot display image."
+                  // );
+                  return (
+                    <>
+                      <a
+                        href="../assets/advisoryexcel.pdf"
+                        download={true}
+                        className="flex justify-center items-center"
+                      >
+                        <i className="bx bx-download text-2xl mr-2"></i>
+                        {desiredValue}
+                      </a>
+                    </>
+                  );
+                  // return null; // or some other fallback JSX
+                }
+              })}
+
               {/* <div className="font-semibold py-4">Created 22 Sep 2021</div>
               <div className="font-light">
                 Lorem ipsum dolor sit amet consectetur adipisicing elit.

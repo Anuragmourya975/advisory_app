@@ -1,15 +1,28 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import io from "socket.io-client";
 import LineChart from "./LineChart";
 import ReactSpeedometer from "react-d3-speedometer";
-const socket = io("http://localhost:3001");
+const socket = io("https://farmer.sasyasystems.com");
 
 const Weather = () => {
   const [AdminWeatherAdvisory, setAdminWeatherAdvisory] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [selectedFileName, setSelectedFileName] = useState("");
+  const fileInputRef = useRef(null);
+
+  const handleButtonClick = () => {
+    fileInputRef.current.click();
+  };
+  const handleFileChange = (e) => {
+    const selectedFile = e.target.files[0];
+    setSelectedFileName(selectedFile ? selectedFile.name : "");
+    // Do something with the selected file, for example, upload it or process it.
+    console.log("Selected file:", selectedFile);
+  };
+
   const sendAdvisory = (e) => {
     e.preventDefault();
-    
+
     if (AdminWeatherAdvisory.trim() === "") {
       setErrorMessage("Advisory cannot be empty");
       return; // Do not proceed with the action
@@ -17,10 +30,12 @@ const Weather = () => {
 
     // Clear error message if it was previously set
     setErrorMessage("");
-    socket.emit("adminWeatherAdvisoryMessage", AdminWeatherAdvisory);
-   
+    const combinedMsg = AdminWeatherAdvisory + `,${selectedFileName}`;
+    socket.emit("adminWeatherAdvisoryMessage", combinedMsg);
+
     localStorage.setItem("WeatherAdvisory", AdminWeatherAdvisory);
     setAdminWeatherAdvisory("");
+    setSelectedFileName("");
   };
   const [weatherData, setWeatherData] = useState({
     temperature: "25°C",
@@ -216,7 +231,14 @@ const Weather = () => {
             <div className="flex items-center justify-between px-3 py-2 border-b dark:border-gray-600">
               <div className="flex flex-wrap items-center divide-gray-200 sm:divide-x sm:rtl:divide-x-reverse dark:divide-gray-600">
                 <div className="flex items-center space-x-1 rtl:space-x-reverse sm:pe-4">
+                  <input
+                    type="file"
+                    ref={fileInputRef}
+                    style={{ display: "none" }}
+                    onChange={handleFileChange}
+                  />
                   <button
+                    onClick={handleButtonClick}
                     type="button"
                     className="p-2 text-gray-500 rounded cursor-pointer hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600"
                   >
@@ -405,6 +427,9 @@ const Weather = () => {
               <label htmlFor="editor" className="sr-only">
                 Broadcast
               </label>
+              {selectedFileName && (
+                <div className="mb-2">Selected File: {selectedFileName}</div>
+              )}
               <textarea
                 id="editor"
                 value={AdminWeatherAdvisory}

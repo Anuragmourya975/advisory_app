@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import io from "socket.io-client";
 
-const socket = io("http://localhost:3001");
+const socket = io("https://farmer.sasyasystems.com");
 
 const FertilizerSchedule = ({ props, data }) => {
   console.log("props in fertilizer tabel", props);
