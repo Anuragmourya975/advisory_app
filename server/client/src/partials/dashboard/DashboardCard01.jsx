@@ -3,9 +3,9 @@ import { Link } from "react-router-dom";
 import LineChart from "../../charts/LineChart01";
 import Icon from "../../images/icon-01.svg";
 import EditMenu from "../../components/DropdownEditMenu";
-import Weather from "../../Components/Advisory/Weather";
+import Weather from "../../components/Advisory/Weather";
 import { XMarkIcon } from "@heroicons/react/24/outline";
-import FertilizerSchedule from "../../Components/Advisory/FertilizerSchedule";
+import FertilizerSchedule from "../../components/Advisory/FertilizerSchedule";
 import { useModal } from "../../contexts/ModalContext";
 // Import utilities
 import { tailwindConfig, hexToRGB } from "../../utils/Utils";
