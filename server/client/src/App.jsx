@@ -1,10 +1,8 @@
 import React, { useEffect } from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
 import Home from "./pages/Home";
-import Admin from "./pages/admin";
-import Farmer from "./pages/farmer";
-import Dashboard1 from "./Components/Admin/Dashboard";
-import Header from "./Components/Header";
+import Farmer from "./pages/Farmer";
+import Dashboard1 from "./components/Admin/Dashboard";
 import "./css/style.css";
 
 import "./charts/ChartjsConfig";
